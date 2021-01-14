@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState, useEffect} from 'react';
+import Header from './Components/Header/index';
+import Sidebar from './Components/Sidebar/index';
+import MainContent from './Components/MainContent/index';
 
 function App() {
+  const [animeList, SetAnimeList ] = useState([]);
+  const [topAnime, setTopAnime] = useState([]);
+  const [search, SetSearch] = useState('');
+
+  const getTopAnimes = async () => {
+    const temp = await fetch(`https://api.jikan.moe/v3/top/anime/1/bypopularity`)
+    .then(res => res.json());
+
+    setTopAnime(temp.top.slice(0,5));
+  }
+
+  useEffect(()=> {
+    getTopAnimes();
+    console.log("Top Anime");
+   
+  },[]);
+
+ console.log(topAnime);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header></Header>
+
+     
+
+    <div className='content-wrap'>
+      <Sidebar topAnime={topAnime}></Sidebar>
+    <MainContent></MainContent>
+    </div>
+
+
+
     </div>
   );
 }
